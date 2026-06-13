@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catch The Button</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#000;
+overflow:hidden;
+color:white;
+}
+
+/* HUD */
+.hud{
+position:fixed;
+top:20px;
+left:20px;
+font-size:18px;
+opacity:0.8;
+}
+
+/* BUTTON */
+#btn{
+position:absolute;
+padding:15px 30px;
+border:none;
+border-radius:30px;
+cursor:pointer;
+font-size:16px;
+color:white;
+background:linear-gradient(45deg,cyan,purple);
+box-shadow:0 0 20px cyan;
+transition:0.2s;
+}
+
+/* TEXT */
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+
+h1{
+font-size:30px;
+text-shadow:0 0 15px cyan;
+}
+
+p{
+opacity:0.7;
+}
+
+</style>
+</head>
+<body>
+
+<div class="hud">
+Score: <span id="score">0</span>
+</div>
+
+<div class="center">
+<h1>Catch The Button</h1>
+<p>Smart speed button 😈</p>
+</div>
+
+<button id="btn">CLICK ME</button>
+
+<script>
+
+const btn = document.getElementById("btn");
+const scoreText = document.getElementById("score");
+
+let score = 0;
+
+/* POSITION */
+let x = window.innerWidth/2;
+let y = window.innerHeight/2;
+
+btn.style.left = x + "px";
+btn.style.top = y + "px";
+
+/* MOUSE */
+let mouse = {x:0,y:0};
+
+window.addEventListener("mousemove",(e)=>{
+mouse.x = e.clientX;
+mouse.y = e.clientY;
+});
+
+/* MOVE LOGIC */
+function update(){
+
+let rect = btn.getBoundingClientRect();
+
+let bx = rect.left + rect.width/2;
+let by = rect.top + rect.height/2;
+
+let dx = bx - mouse.x;
+let dy = by - mouse.y;
+
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+/* SPEED CONTROL */
+let speed = 0.05; // default slow
+
+if(dist < 200){
+speed = 0.25; // FAST when close
+}
+
+/* move direction */
+x += dx * speed;
+y += dy * speed;
+
+/* boundaries */
+x = Math.max(20, Math.min(window.innerWidth-120, x));
+y = Math.max(20, Math.min(window.innerHeight-60, y));
+
+btn.style.left = x + "px";
+btn.style.top = y + "px";
+
+requestAnimationFrame(update);
+}
+
+update();
+
+/* CLICK */
+btn.onclick = ()=>{
+
+score++;
+scoreText.innerText = score;
+
+/* teleport away slightly */
+x = Math.random() * (window.innerWidth - 120);
+y = Math.random() * (window.innerHeight - 60);
+
+};
+
+</script>
+
+</body>
+</html>
