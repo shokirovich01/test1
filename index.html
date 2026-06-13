@@ -17,6 +17,7 @@ body{
 background:#000;
 overflow:hidden;
 color:white;
+transition:0.2s;
 }
 
 /* HUD */
@@ -26,6 +27,24 @@ top:20px;
 left:20px;
 font-size:18px;
 opacity:0.8;
+}
+
+/* CENTER TEXT */
+.center{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+
+h1{
+font-size:32px;
+text-shadow:0 0 15px cyan;
+}
+
+p{
+opacity:0.7;
 }
 
 /* BUTTON */
@@ -39,25 +58,7 @@ font-size:16px;
 color:white;
 background:linear-gradient(45deg,cyan,purple);
 box-shadow:0 0 20px cyan;
-transition:0.2s;
-}
-
-/* TEXT */
-.center{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-text-align:center;
-}
-
-h1{
-font-size:30px;
-text-shadow:0 0 15px cyan;
-}
-
-p{
-opacity:0.7;
+transition:0.05s;
 }
 
 </style>
@@ -65,15 +66,15 @@ opacity:0.7;
 <body>
 
 <div class="hud">
-shunchagina bosding: <span id="score">0</span>
+score: <span id="score">0</span>
 </div>
 
 <div class="center">
-<h1>tugmani bosishga xarakat qil</h1>
-<p>Har bosganingda tezlashadi😈</p>
+<h1>tugmani bosishga harakat qil</h1>
+<p>yaqinlashsang qochadi 😈</p>
 </div>
 
-<button id="btn">shokirovich</button>
+<button id="btn">SHOKIROVICH</button>
 
 <script>
 
@@ -82,20 +83,31 @@ const scoreText = document.getElementById("score");
 
 let score = 0;
 
-/* POSITION */
+/* start position */
 let x = window.innerWidth/2;
 let y = window.innerHeight/2;
 
 btn.style.left = x + "px";
 btn.style.top = y + "px";
 
-/* MOUSE */
+/* mouse */
 let mouse = {x:0,y:0};
 
 window.addEventListener("mousemove",(e)=>{
 mouse.x = e.clientX;
 mouse.y = e.clientY;
 });
+
+/* BACKGROUND FLASH FUNCTION */
+function flashBackground(){
+
+document.body.style.background = "red";
+
+setTimeout(()=>{
+document.body.style.background = "#000";
+},1000);
+
+}
 
 /* MOVE LOGIC */
 function update(){
@@ -106,18 +118,22 @@ let bx = rect.left + rect.width/2;
 let by = rect.top + rect.height/2;
 
 let dx = bx - mouse.x;
-let dy = by - mouse.y;
+let dy = bx - mouse.y;
 
 let dist = Math.sqrt(dx*dx + dy*dy);
 
 /* SPEED CONTROL */
-let speed = 0.05; // default slow
+let speed = 0.03;
 
 if(dist < 200){
-speed = 0.25; // FAST when close
+speed = 0.12;
 }
 
-/* move direction */
+if(dist < 100){
+speed = 0.3;
+}
+
+/* move */
 x += dx * speed;
 y += dy * speed;
 
@@ -139,7 +155,10 @@ btn.onclick = ()=>{
 score++;
 scoreText.innerText = score;
 
-/* teleport away slightly */
+/* flash red background */
+flashBackground();
+
+/* teleport */
 x = Math.random() * (window.innerWidth - 120);
 y = Math.random() * (window.innerHeight - 60);
 
